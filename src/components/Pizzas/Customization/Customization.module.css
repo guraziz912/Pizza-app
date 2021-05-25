@@ -1,0 +1,19 @@
+.toppings {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-bottom: 2rem;
+  width: 300px;
+}
+.toppings li {
+  list-style-type: none;
+}
+.toppings input {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.modal {
+  width: 90vw;
+  max-width: 90vw;
+}

@@ -1,0 +1,11 @@
+.cart {
+  padding: 0px 1rem;
+}
+.cartEmpty {
+  position: inherit;
+  width: 300px;
+}
+.header {
+  background: #cd5c5c;
+  color: white;
+}

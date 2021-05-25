@@ -1,0 +1,16 @@
+.counter {
+  display: flex;
+  -webkit-box-align: center;
+  cursor: pointer;
+  border: 1px solid rgb(123, 40, 40);
+  max-width: 6rem;
+  border-radius: 3px;
+  background-color: white;
+}
+.counter label {
+  padding: 0.32rem 0.8rem;
+  font-weight: 600;
+  font-size: medium;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}

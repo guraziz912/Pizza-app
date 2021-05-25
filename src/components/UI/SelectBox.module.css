@@ -1,0 +1,20 @@
+.prices {
+  background-color: #3e87f5;
+  color: white;
+  padding: 12px;
+  width: 140px;
+  border: none;
+  outline: none;
+
+  cursor: pointer;
+}
+
+.prices:hover {
+  color: #feffff;
+  background-color: #639ef7;
+  box-shadow: black;
+}
+
+.prices option {
+  padding: 30px;
+}

@@ -1,0 +1,47 @@
+.box {
+  margin-top: 100px;
+  display: block;
+  height: 500px;
+  width: 400px;
+  background-color: beige;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.img {
+  border-radius: 5px;
+  width: 400px;
+  height: 200px;
+}
+
+.descriptionBox {
+  height: 5rem;
+  border-bottom: 1px solid rgb(233, 233, 233);
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.name {
+  flex-basis: auto;
+  -webkit-box-pack: start;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.containerSelectBox {
+  flex-basis: auto;
+  flex-flow: row nowrap;
+  display: flex;
+  margin-top: 0.4rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+.bttn {
+  flex-basis: auto;
+  flex-flow: row nowrap;
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  margin-top: 2rem;
+  position: relative;
+}

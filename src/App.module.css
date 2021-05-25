@@ -1,0 +1,22 @@
+.columnLeft {
+  display: block;
+  float: left;
+  padding: 10px;
+  width: 60%;
+  height: 100vh;
+}
+
+.columnRight {
+  margin-top: 200px;
+  text-align: center;
+  float: right;
+  padding: 10px;
+  width: 30%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: '';
+  display: block;
+  clear: both;
+}
