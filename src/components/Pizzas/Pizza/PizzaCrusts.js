@@ -1,12 +1,23 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { pizzaActions } from '../../../store/pizzaSlice';
 import SelectBox from '../../UI/SelectBox';
 
-const PizzaCrusts = () => {
+const PizzaCrusts = ({ id }) => {
+  const dispatch = useDispatch();
   const crusts = useSelector((state) => state.pizza.crusts);
+  const pizzasData = useSelector((state) => state.pizza.dummyData);
+  const pizza = pizzasData.find((pizza) => pizza.id === id);
+  const crustHandler = (event) => {
+    dispatch(pizzaActions.addCrust({ data: event.target.value, id }));
+  };
   return (
-    <SelectBox>
+    <SelectBox value={pizza.pizzaCrust} onChange={crustHandler}>
       {crusts.map((crust) => {
-        return <option value={crust}>{crust}</option>;
+        return (
+          <option selected={pizza.pizzaCrust ? 'true' : ''} value={crust}>
+            {crust}
+          </option>
+        );
       })}
     </SelectBox>
   );

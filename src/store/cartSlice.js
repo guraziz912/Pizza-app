@@ -1,53 +1,101 @@
 import { createSlice } from '@reduxjs/toolkit';
-import _ from 'lodash';
 
 const initialState = {
   cartItems: [],
   totalQuantity: 0,
   totalPrice: 0,
+  prices: { Regular: 219, Medium: 309, Large: 419 },
+  crustPrices: { 'Pan Pizza': 399, 'Cheese Burst': 449, 'Thin Crust': 498 },
+  vegToppingPrice: 30,
+  nonVegToppingPrice: 50,
 };
+function arrayCompare(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
 
+  if (JSON.stringify(arr1) !== JSON.stringify(arr2)) {
+    return false;
+  }
+
+  return true;
+}
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
     addToCart(state, action) {
-      const existingCartItemIndex = state.cartItems.findIndex(
-        (item) => item.id === action.payload.id
-      );
-      const existingCartItem = state.cartItems[existingCartItemIndex];
-      let updatedCartItems;
+      let count = 0;
 
-      if (existingCartItem) {
-        if (_.isEqual(existingCartItem.topping, action.payload.topping)) {
-          const updatedItem = {
-            ...existingCartItem,
-            topping: existingCartItem.topping,
-            quantity: existingCartItem.quantity++,
-          };
-          updatedCartItems = [...state.cartItems];
-          updatedCartItems[existingCartItemIndex] = updatedItem;
-        } else {
+      if (state.cartItems.length > 0) {
+        state.cartItems.map((item, index) => {
+          if (
+            item.id === action.payload.id &&
+            arrayCompare(item.vegTopping, action.payload.vegTopping) &&
+            item.pizzaSize === action.payload.pizzaSize
+          ) {
+            let vegToppingNumber = state.cartItems[index].vegTopping.length;
+            state.cartItems[index].quantity++;
+            state.cartItems[index].totalPrice =
+              state.cartItems[index].totalPrice +
+              state.cartItems[index].basePrice +
+              vegToppingNumber * state.vegToppingPrice;
+          } else {
+            count++;
+          }
+        });
+
+        if (count === state.cartItems.length) {
+          let vegToppingsNumber = action.payload.vegTopping.length;
+          let newTotalPrice =
+            action.payload.totalPrice +
+            action.payload.basePrice +
+            vegToppingsNumber * state.vegToppingPrice;
           state.cartItems = [
             ...state.cartItems,
-            { ...action.payload, quantity: action.payload.quantity++ },
+            {
+              ...action.payload,
+              totalPrice: newTotalPrice,
+              quantity: 1,
+            },
           ];
         }
       } else {
-        state.cartItems = [...state.cartItems, action.payload];
+        let vegToppingsNumber = action.payload.vegTopping.length;
+        let newTotalPrice =
+          action.payload.totalPrice +
+          action.payload.basePrice +
+          vegToppingsNumber * state.vegToppingPrice;
+        state.cartItems = [
+          ...state.cartItems,
+          {
+            ...action.payload,
+            totalPrice: newTotalPrice,
+          },
+        ];
       }
     },
     removeFromCart(state, action) {
-      const existingItem = state.cartItems.find(
-        (item) => item.id === action.payload
-      );
-      if (existingItem.quantity === 1) {
-        state.cartItems = state.cartItems.filter(
-          (item) => item.id !== action.payload
-        );
-      } else {
-        existingItem.quantity--;
-      }
+      state.cartItems.map((item, index) => {
+        if (
+          item.id === action.payload.id &&
+          arrayCompare(item.vegTopping, action.payload.vegTopping)
+        ) {
+          if (state.cartItems[index].quantity === 1) {
+            state.cartItems = state.cartItems.filter(
+              (item) =>
+                !arrayCompare(item.vegTopping, action.payload.vegTopping)
+            );
+          } else {
+            state.cartItems[index].quantity--;
+            state.cartItems[index].totalPrice =
+              state.cartItems[index].totalPrice -
+              (state.cartItems[index].basePrice +
+                state.cartItems[index].vegTopping.length *
+                  state.vegToppingPrice);
+          }
+        }
+      });
     },
   },
 });

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
+let initialState = {
   dummyData: [
     {
       id: 'p1',
@@ -9,7 +9,11 @@ const initialState = {
       image: 'https://images.dominos.co.in/new_margherita_2502.jpg',
       description: 'A classic delight with 100% Real mozzarella cheese ',
       quantity: 0,
-      topping: [],
+      vegTopping: [],
+      nonVegTopping: [],
+      pizzaSize: 'Regular',
+      pizzaCrust: 'Pan Pizza',
+      totalPrice: 0,
     },
     {
       id: 'p2',
@@ -18,7 +22,11 @@ const initialState = {
       image: 'https://images.dominos.co.in/farmhouse.png',
       description: 'A classic delight with 100% Real mozzarella cheese ',
       quantity: 0,
-      topping: [],
+      vegTopping: [],
+      nonVegTopping: [],
+      pizzaSize: 'Regular',
+      pizzaCrust: 'Pan Pizza',
+      totalPrice: 0,
     },
     {
       id: 'p3',
@@ -27,7 +35,11 @@ const initialState = {
       image: 'https://images.dominos.co.in/farmhouse.png',
       description: 'A classic delight with 100% Real mozzarella cheese ',
       quantity: 0,
-      topping: [],
+      vegTopping: [],
+      nonVegTopping: [],
+      pizzaSize: 'Regular',
+      pizzaCrust: 'Pan Pizza',
+      totalPrice: 0,
     },
     {
       id: 'p4',
@@ -36,7 +48,11 @@ const initialState = {
       image: 'https://images.dominos.co.in/farmhouse.png',
       description: 'A classic delight with 100% Real mozzarella cheese ',
       quantity: 0,
-      topping: [],
+      vegTopping: [],
+      nonVegTopping: [],
+      pizzaSize: 'Regular',
+      pizzaCrust: 'Pan Pizza',
+      totalPrice: 0,
     },
     {
       id: 'p5',
@@ -45,7 +61,11 @@ const initialState = {
       image: 'https://images.dominos.co.in/farmhouse.png',
       description: 'A classic delight with 100% Real mozzarella cheese ',
       quantity: 0,
-      topping: [],
+      vegTopping: [],
+      nonVegTopping: [],
+      pizzaSize: 'Regular',
+      pizzaCrust: 'Pan Pizza',
+      totalPrice: 0,
     },
   ],
   vegToppings: [
@@ -53,25 +73,21 @@ const initialState = {
       id: 't1',
       url: 'https://images.dominos.co.in/toppingsCapsicum.jpg',
       name: 'Capsicum',
-      selected: false,
     },
     {
       id: 't2',
       url: 'https://images.dominos.co.in/toppingsJalapeno.jpg',
       name: 'Jalepenos',
-      selected: false,
     },
     {
       id: 't3',
       url: 'https://images.dominos.co.in/toppingsGoldenCorn.jpg',
       name: 'Corn',
-      selected: false,
     },
     {
       id: 't4',
       url: 'https://images.dominos.co.in/toppingsMushroom.jpg',
       name: 'Mushrooms',
-      selected: false,
     },
   ],
   nonVegToppings: [
@@ -94,8 +110,6 @@ const initialState = {
   sizes: ['Regular', 'Medium', 'Large'],
   prices: { Regular: 219, Medium: 309, Large: 419 },
   crusts: ['Pan Pizza', 'Chesse Burst', 'Thin Crust'],
-  vegToppingPrice: 35,
-  nonVegToppingPrice: 50,
   showCustomization: false,
   crustPrices: { 'Pan Pizza': 399, 'Cheese Burst': 449, 'Thin Crust': 498 },
   customizePizzaId: null,
@@ -125,16 +139,16 @@ const pizzaSlice = createSlice({
       if (action.payload.name && action.payload.checked) {
         state.dummyData.map((pizza) => {
           if (pizza.id === state.customizePizzaId) {
-            if (!pizza.topping.includes(action.payload.name)) {
-              pizza.topping.push(action.payload.name);
+            if (!pizza.vegTopping.includes(action.payload.name)) {
+              pizza.vegTopping.push(action.payload.name);
             }
           }
         });
       } else {
         state.dummyData.map((pizza) => {
           if (pizza.id === state.customizePizzaId) {
-            if (pizza.topping.includes(action.payload.name)) {
-              pizza.topping = pizza.topping.filter(
+            if (pizza.vegTopping.includes(action.payload.name)) {
+              pizza.vegTopping = pizza.vegTopping.filter(
                 (topping) => topping !== action.payload.name
               );
             }
@@ -143,12 +157,25 @@ const pizzaSlice = createSlice({
       }
     },
     closeModal(state) {
-      state.customizePizzaId = null;
       state.showCustomization = false;
     },
     showModal(state, action) {
       state.customizePizzaId = action.payload;
       state.showCustomization = true;
+    },
+    addSize(state, action) {
+      state.dummyData.map((item) => {
+        if (item.id === action.payload.id) {
+          item.pizzaSize = action.payload.data;
+        }
+      });
+    },
+    addCrust(state, action) {
+      state.dummyData.map((item) => {
+        if (item.id === action.payload.id) {
+          item.pizzaCrust = action.payload.data;
+        }
+      });
     },
   },
 });

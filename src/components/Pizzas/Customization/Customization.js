@@ -5,50 +5,49 @@ import CheckBox from '../../UI/CheckBox';
 import { Button, Modal } from 'react-bootstrap';
 import classes from './Customization.module.css';
 import constants from '../../../utils/constants';
+import PizzaSizes from '../Pizza/PizzaSizes';
 
 const Customization = () => {
-  const [pizzaTopping, setPizzaTopping] = useState([]);
+  const vegToppingsInPizza = useSelector((state) => state.pizza.vegToppings);
   const [vegToppingState, setVegToppingState] = useState({
     Capsicum: false,
     Jalepenos: false,
     Mushrooms: false,
     Corn: false,
   });
-
+  // const [nonVegpizzaTopping, setVegPizzaTopping] = useState([]);
+  const [nonVegToppingState, setNonVegToppingState] = useState({
+    'Chicken Tikka': false,
+    'Chicken Keema': false,
+    'Peri Peri Chicken': false,
+  });
   const cart = useSelector((state) => state.cart.cartItems);
   const customiseId = useSelector((state) => state.pizza.customizePizzaId);
-  const pizzaInCart = cart.find((pizza) => pizza.id === customiseId);
+  let cartItem = null;
+  if (cart) {
+    cartItem = cart.find((item) => item.id === customiseId);
+  }
 
   useEffect(() => {
-    if (pizzaInCart) {
-      setPizzaTopping(pizzaInCart.topping);
+    if (cartItem) {
+      if (cartItem.vegTopping) {
+        for (const i of vegToppingsInPizza) {
+          if (cartItem.vegTopping.includes(i.name)) {
+            setVegToppingState((prevState) => {
+              return { ...prevState, [i.name]: true };
+            });
+          }
+        }
+      }
+    } else {
+      setVegToppingState({
+        Capsicum: false,
+        Jalepenos: false,
+        Mushrooms: false,
+        Corn: false,
+      });
     }
-  }, [pizzaInCart, customiseId]);
-
-  useEffect(() => {
-    if (pizzaTopping.length > 0) {
-      if (pizzaTopping.includes('Capsicum')) {
-        setVegToppingState((prevState) => {
-          return { ...prevState, Capsicum: true };
-        });
-      }
-      if (pizzaTopping.includes('Jalepenos')) {
-        setVegToppingState((prevState) => {
-          return { ...prevState, Jalepenos: true };
-        });
-      }
-      if (pizzaTopping.includes('Corn')) {
-        setVegToppingState((prevState) => {
-          return { ...prevState, Corn: true };
-        });
-      }
-      if (pizzaTopping.includes('Mushrooms')) {
-        setVegToppingState((prevState) => {
-          return { ...prevState, Mushrooms: true };
-        });
-      }
-    }
-  }, [pizzaTopping, customiseId]);
+  }, [cartItem, vegToppingsInPizza]);
   const distpatch = useDispatch();
   const show = useSelector((state) => state.pizza.showCustomization);
   const vegToppings = useSelector((state) => state.pizza.vegToppings);
@@ -57,17 +56,36 @@ const Customization = () => {
   const formHandler = (event) => {
     event.preventDefault();
   };
-
+  const resetToppingHandler = () => {
+    setVegToppingState({
+      Capsicum: false,
+      Jalepenos: false,
+      Mushrooms: false,
+      Corn: false,
+    });
+    setNonVegToppingState({
+      'Chicken Tikka': false,
+      'Chicken Keema': false,
+      'Peri Peri Chicken': false,
+    });
+  };
   const handleClose = () => distpatch(pizzaActions.closeModal());
   const addCustomizationHandler = (event) => {
     distpatch(pizzaActions.selectTopping(event.target));
-  };
 
+    setVegToppingState((prevState) => ({
+      ...prevState,
+      [event.target.name]: event.target.checked,
+    }));
+  };
   return (
     <Fragment>
       <Modal
         show={show}
-        onHide={handleClose}
+        onHide={() => {
+          resetToppingHandler();
+          handleClose();
+        }}
         size={constants.modalSize}
         centered
       >
@@ -77,6 +95,9 @@ const Customization = () => {
         <Modal.Body>
           <h3>{constants.vegTopping}</h3>
           <form onSubmit={formHandler}>
+            <div className={classes.toppings}>
+              <PizzaSizes id={customiseId} />
+            </div>
             <div className={classes.toppings}>
               {vegToppings.map((toppingData) => {
                 return (
@@ -118,13 +139,20 @@ const Customization = () => {
             </div>
           </form>
         </Modal.Body>
+
         <Modal.Footer>
+          <Button variant="light" onClick={resetToppingHandler}>
+            Reset Toppings
+          </Button>
           <Button variant={constants.closeBttnVarient} onClick={handleClose}>
             Close
           </Button>
           <Button
             variant={constants.addToCartBttnVarient}
-            onClick={handleClose}
+            onClick={() => {
+              resetToppingHandler();
+              handleClose();
+            }}
           >
             Add to Cart
           </Button>

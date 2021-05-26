@@ -13,7 +13,7 @@ const CheckBox = ({ label, input, onChange, checked }) => {
           type="checkbox"
           {...input}
           onChange={onChange}
-          defaultChecked={checked}
+          checked={checked}
         />
       </div>
     </div>

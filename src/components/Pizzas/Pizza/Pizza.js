@@ -1,12 +1,13 @@
 import constants from '../../../utils/constants';
 import PizzaSizes from './PizzaSizes';
 import PizzaCrusts from './PizzaCrusts';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { pizzaActions } from '../../../store/pizzaSlice';
 import { cartActions } from '../../../store/cartSlice';
 import Button from 'react-bootstrap/Button';
 import Counter from '../../UI/Counter';
 import classes from './Pizza.module.css';
+
 const Pizza = (props) => {
   const dispatch = useDispatch();
   const {
@@ -16,25 +17,31 @@ const Pizza = (props) => {
     description,
     quantity,
     basePrice,
-    topping,
+    vegTopping,
+    pizzaSize,
+    pizzaCrust,
+    totalPrice,
   } = props.item;
+
   const handleShow = (id) => dispatch(pizzaActions.showModal(id));
   const addToCartHandler = () => {
     dispatch(pizzaActions.quantityIncrease(id)); //quantity handler
+
     const cartItem = {
       ...props.item,
+      vegTopping,
       quantity: props.item.quantity + 1,
     };
     dispatch(cartActions.addToCart(cartItem));
   };
   const removeToCartHandler = () => {
     dispatch(pizzaActions.quantityDecrease(id));
-    dispatch(cartActions.removeFromCart(id));
+    dispatch(cartActions.removeFromCart(props.item));
   };
   const handleClose = () => dispatch(pizzaActions.closeModal());
   let customisationText = ' ';
-  for (let i = 0; i < topping.length; i++) {
-    customisationText += topping[i] + ', ';
+  for (let i = 0; i < vegTopping.length; i++) {
+    customisationText += vegTopping[i] + ', ';
   }
 
   const isCart = props.type === 'cart';
@@ -49,18 +56,41 @@ const Pizza = (props) => {
           <span className={classes.name}>{name}</span>
           <span>{description}</span>
           <span>Base Price :{basePrice}</span>
+          {isCart && <span>Total Price :{totalPrice}</span>}
         </div>
-        {isCart && <div>{customisationText}</div>}
-
+        {isCart && (
+          <div>
+            <div>
+              <span>Your Customizations : </span>
+              <span>{customisationText}</span>
+            </div>
+          </div>
+        )}
+        {isCart && (
+          <div>
+            <div>
+              <span>Pizza Size : </span>
+              <span>{pizzaSize}</span>
+            </div>
+          </div>
+        )}
+        {isCart && (
+          <div>
+            <div>
+              <span>Pizza Crust : </span>
+              <span>{pizzaCrust}</span>
+            </div>
+          </div>
+        )}
         {!isCart && (
           <div className={classes.containerSelectBox}>
             <div>
               <p>{constants.sizes}</p>
-              <PizzaSizes />
+              <PizzaSizes id={id} />
             </div>
             <div>
               <p>{constants.crusts}</p>
-              <PizzaCrusts />
+              <PizzaCrusts id={id} />
             </div>
           </div>
         )}
